@@ -8,53 +8,99 @@ namespace ConsoleApp7
 {
     internal class Program
     {
-        static void Main(string[] args)
+
+        public class CreditCard
         {
-            try
+            private string cardNumber;
+            private string ownerName;
+            private string cvc;
+            private DateTime expirationDate;
+
+            public CreditCard(string cardNumber, string ownerName, string cvc, DateTime expirationDate)
             {
-                Console.WriteLine("Введіть двійкове число (використовуйте тільки 0 та 1):");
-                string input = Console.ReadLine();
-                if (string.IsNullOrEmpty(input))
+                SetCardNumber(cardNumber);
+                SetOwnerName(ownerName);
+                SetCVC(cvc);
+                SetExpirationDate(expirationDate);
+            }
+
+            public void SetCardNumber(string number)
+            {
+                if (string.IsNullOrEmpty(number) || number.Length != 16 || !IsDigitsOnly(number))
                 {
-                    throw new ArgumentException("Рядок не може бути пустим.");
+                    throw new Exception("Номер картки повинен містити 16 цифр");
                 }
-                if (!input.All(c => c == '0' || c == '1'))
+                cardNumber = number;
+            }
+
+            public void SetOwnerName(string name)
+            {
+                if (string.IsNullOrEmpty(name))
                 {
-                    throw new FormatException("Рядок містить символи відмінні від 0 та 1.");
+                    throw new Exception("ПІБ власника не може бути пустим");
                 }
-                if (input.Length > 31)
+                ownerName = name;
+            }
+
+            public void SetCVC(string cvcNumber)
+            {
+                if (string.IsNullOrEmpty(cvcNumber) || cvcNumber.Length != 3 || !IsDigitsOnly(cvcNumber))
                 {
-                    throw new OverflowException("Двійкове число занадто велике для типу int.");
+                    throw new Exception("CVC код повинен містити 3 цифри");
                 }
-                checked
+                cvc = cvcNumber;
+            }
+
+            public void SetExpirationDate(DateTime date)
+            {
+                if (date < DateTime.Now)
                 {
-                    int result = 0;
-                    for (int i = 0; i < input.Length; i++)
+                    throw new Exception("Дата закінчення терміну дії не може бути в минулому");
+                }
+                expirationDate = date;
+            }
+
+            private bool IsDigitsOnly(string str)
+            {
+                foreach (char c in str)
+                {
+                    if (c < '0' || c > '9')
+                        return false;
+                }
+                return true;
+            }
+
+            public void PrintCardInfo()
+            {
+                Console.WriteLine($"Номер картки: ****{cardNumber.Substring(12)}");
+                Console.WriteLine($"Власник: {ownerName}");
+                Console.WriteLine($"Термін дії: {expirationDate:MM/yy}");
+            }
+        }
+
+
+        internal class Program
+        {
+            static void Main(string[] args)
+            {
+                {
+                    try
                     {
-                        result = (result << 1) + (input[i] - '0');
+                        CreditCard card = new CreditCard(
+                            "1234567890123456",     
+                            "Іванов Іван",           
+                            "123",                   
+                            new DateTime(2025, 12, 1) 
+                        );
+
+                        card.PrintCardInfo();
                     }
-                    Console.WriteLine($"Двійкове число {input} в десятковій системі: {result}");
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine($"Помилка: {ex.Message}");
+                    }
                 }
-            }
-            catch (ArgumentException ex)
-            {
-                Console.WriteLine($"Помилка введення: {ex.Message}");
-            }
-            catch (FormatException ex)
-            {
-                Console.WriteLine($"Помилка формату: {ex.Message}");
-            }
-            catch (OverflowException)
-            {
-                Console.WriteLine($"Помилка: число виходить за межі допустимого діапазону int ({int.MinValue} до {int.MaxValue})");
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Виникла непередбачена помилка: {ex.Message}");
             }
         }
     }
 }
-
-
- 
