@@ -8,98 +8,45 @@ namespace ConsoleApp7
 {
     internal class Program
     {
-
-        public class CreditCard
+        static void Main(string[] args)
         {
-            private string cardNumber;
-            private string ownerName;
-            private string cvc;
-            private DateTime expirationDate;
-
-            public CreditCard(string cardNumber, string ownerName, string cvc, DateTime expirationDate)
+            try
             {
-                SetCardNumber(cardNumber);
-                SetOwnerName(ownerName);
-                SetCVC(cvc);
-                SetExpirationDate(expirationDate);
-            }
-
-            public void SetCardNumber(string number)
-            {
-                if (string.IsNullOrEmpty(number) || number.Length != 16 || !IsDigitsOnly(number))
+                Console.WriteLine("Введіть математичний вираз (тільки цілі числа та оператор *):");
+                string input = Console.ReadLine();
+                if (string.IsNullOrWhiteSpace(input))
                 {
-                    throw new Exception("Номер картки повинен містити 16 цифр");
+                    throw new ArgumentException("Введення не може бути порожнім.");
                 }
-                cardNumber = number;
-            }
+                string[] parts = input.Split('*');
 
-            public void SetOwnerName(string name)
-            {
-                if (string.IsNullOrEmpty(name))
+                int result = 1;
+                foreach (string part in parts)
                 {
-                    throw new Exception("ПІБ власника не може бути пустим");
-                }
-                ownerName = name;
-            }
-
-            public void SetCVC(string cvcNumber)
-            {
-                if (string.IsNullOrEmpty(cvcNumber) || cvcNumber.Length != 3 || !IsDigitsOnly(cvcNumber))
-                {
-                    throw new Exception("CVC код повинен містити 3 цифри");
-                }
-                cvc = cvcNumber;
-            }
-
-            public void SetExpirationDate(DateTime date)
-            {
-                if (date < DateTime.Now)
-                {
-                    throw new Exception("Дата закінчення терміну дії не може бути в минулому");
-                }
-                expirationDate = date;
-            }
-
-            private bool IsDigitsOnly(string str)
-            {
-                foreach (char c in str)
-                {
-                    if (c < '0' || c > '9')
-                        return false;
-                }
-                return true;
-            }
-
-            public void PrintCardInfo()
-            {
-                Console.WriteLine($"Номер картки: ****{cardNumber.Substring(12)}");
-                Console.WriteLine($"Власник: {ownerName}");
-                Console.WriteLine($"Термін дії: {expirationDate:MM/yy}");
-            }
-        }
-
-
-        internal class Program
-        {
-            static void Main(string[] args)
-            {
-                {
-                    try
+                    // Перетворюємо кожну частину на ціле число
+                    if (int.TryParse(part.Trim(), out int number))
                     {
-                        CreditCard card = new CreditCard(
-                            "1234567890123456",     
-                            "Іванов Іван",           
-                            "123",                   
-                            new DateTime(2025, 12, 1) 
-                        );
-
-                        card.PrintCardInfo();
+                        result *= number;
                     }
-                    catch (Exception ex)
+                    else
                     {
-                        Console.WriteLine($"Помилка: {ex.Message}");
+                        throw new FormatException($"Не вдалося перетворити '{part}' на ціле число.");
                     }
                 }
+
+                Console.WriteLine($"Результат: {result}");
+            }
+            catch (FormatException ex)
+            {
+                Console.WriteLine("Помилка формату: " + ex.Message);
+            }
+            catch (ArgumentException ex)
+            {
+                Console.WriteLine("Помилка введення: " + ex.Message);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Невідома помилка: " + ex.Message);
             }
         }
     }
