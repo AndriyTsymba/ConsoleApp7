@@ -10,43 +10,29 @@ namespace ConsoleApp7
     {
         static void Main(string[] args)
         {
-            try
-            {
-                Console.WriteLine("Введіть математичний вираз (тільки цілі числа та оператор *):");
-                string input = Console.ReadLine();
-                if (string.IsNullOrWhiteSpace(input))
-                {
-                    throw new ArgumentException("Введення не може бути порожнім.");
-                }
-                string[] parts = input.Split('*');
+            Console.InputEncoding = Encoding.Unicode;
+            Console.OutputEncoding = Encoding.Unicode;
 
-                int result = 1;
-                foreach (string part in parts)
+            while (true)
+            {
+                Console.WriteLine("Калькулятор систем числення");
+                Console.WriteLine("1. Двійкова");
+                Console.WriteLine("2. Вісімкова");
+                Console.WriteLine("3. Шістнадцяткова");
+                Console.WriteLine("4. Вихід");
+                Console.Write("Виберіть систему числення: ");
+                int choice = Convert.ToInt32(Console.ReadLine());
+
+                if (choice == 4)
                 {
-                    // Перетворюємо кожну частину на ціле число
-                    if (int.TryParse(part.Trim(), out int number))
-                    {
-                        result *= number;
-                    }
-                    else
-                    {
-                        throw new FormatException($"Не вдалося перетворити '{part}' на ціле число.");
-                    }
+                    break;
                 }
 
-                Console.WriteLine($"Результат: {result}");
-            }
-            catch (FormatException ex)
-            {
-                Console.WriteLine("Помилка формату: " + ex.Message);
-            }
-            catch (ArgumentException ex)
-            {
-                Console.WriteLine("Помилка введення: " + ex.Message);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("Невідома помилка: " + ex.Message);
+                Console.Write("Введіть число: ");
+                int num = Convert.ToInt32(Console.ReadLine());
+                Convertor convertor = new Convertor();
+                convertor.SetAndDispay(num, choice);
+                Console.WriteLine();
             }
         }
     }
