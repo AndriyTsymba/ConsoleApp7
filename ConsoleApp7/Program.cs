@@ -12,17 +12,33 @@ namespace ConsoleApp7
         {
             try
             {
-                Console.WriteLine("Введіть число (тільки цифри 0-9):");
+                Console.WriteLine("Введіть двійкове число (використовуйте тільки 0 та 1):");
                 string input = Console.ReadLine();
-                if (!input.All(char.IsDigit))
+                if (string.IsNullOrEmpty(input))
                 {
-                    throw new FormatException("Рядок містить неприпустимі символи. Дозволені тільки цифри 0-9.");
+                    throw new ArgumentException("Рядок не може бути пустим.");
+                }
+                if (!input.All(c => c == '0' || c == '1'))
+                {
+                    throw new FormatException("Рядок містить символи відмінні від 0 та 1.");
+                }
+                if (input.Length > 31)
+                {
+                    throw new OverflowException("Двійкове число занадто велике для типу int.");
                 }
                 checked
                 {
-                    int result = Convert.ToInt32(input);
-                    Console.WriteLine($"Успішно конвертовано в число: {result}");
+                    int result = 0;
+                    for (int i = 0; i < input.Length; i++)
+                    {
+                        result = (result << 1) + (input[i] - '0');
+                    }
+                    Console.WriteLine($"Двійкове число {input} в десятковій системі: {result}");
                 }
+            }
+            catch (ArgumentException ex)
+            {
+                Console.WriteLine($"Помилка введення: {ex.Message}");
             }
             catch (FormatException ex)
             {
@@ -39,7 +55,6 @@ namespace ConsoleApp7
         }
     }
 }
-
 
 
  
