@@ -10,14 +10,12 @@ namespace ConsoleApp7
     {
         static void Main(string[] args)
         {
-           
-                Console.InputEncoding = Encoding.Unicode;
-                Console.OutputEncoding = Encoding.Unicode;
 
-                Console.WriteLine("Enter a number in words: ");
-                var word = Console.ReadLine();
-                int num = ConverFromWordToNumber.Convert(word);
-                Console.WriteLine(num);
-            }
+            Console.InputEncoding = Encoding.Unicode;
+            Console.OutputEncoding = Encoding.Unicode;
+
+            ForeignPassport passport = new ForeignPassport("2384637rt", "Andriy", "28.09");
+            Console.WriteLine(passport.ToString());
         }
     }
+}
